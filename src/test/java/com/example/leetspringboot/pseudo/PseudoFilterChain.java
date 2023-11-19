@@ -4,5 +4,5 @@ package com.example.leetspringboot.pseudo;
  * refer to {@link javax.servlet.FilterChain}
  */
 public interface PseudoFilterChain {
-    void doFilter();
+    void doFilter() throws Exception;
 }

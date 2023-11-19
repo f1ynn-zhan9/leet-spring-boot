@@ -9,32 +9,10 @@ import java.util.stream.IntStream;
 
 @Slf4j
 class PseudoFilterChainTests {
-
-    /**
-     * refer to {@link org.apache.catalina.core.ApplicationFilterChain#internalDoFilter(ServletRequest, ServletResponse)}
-     *
-     * @param filters filters
-     * @return {@link PseudoFilterChain}
-     */
-    static PseudoFilterChain buildFilterChain(PseudoFilter[] filters) {
-        return new PseudoFilterChain() {
-            private final int n = filters.length;
-            private int pos = 0;
-
-            @Override
-            public void doFilter() {
-                if (pos < n) {
-                    var filter = filters[pos++];
-                    filter.doFilter(this);
-                    return;
-                }
-                log.info("We fell off the end of the chain -- call the servlet instance");
-            }
-        };
-    }
+    PseudoDispatcherServlet servlet = new PseudoDispatcherServlet();
 
     @Test
-    void test() {
+    void testDoFilter() throws Exception {
         var filters = IntStream.range(0, 5)
             .mapToObj(this::buildFilter)
             .toArray(PseudoFilter[]::new);
@@ -47,6 +25,31 @@ class PseudoFilterChainTests {
             log.info("before doFilter: {}", filterId);
             filterChain.doFilter();
             log.info("after doFilter: {}", filterId);
+        };
+    }
+
+    /**
+     * refer to {@link org.apache.catalina.core.ApplicationFilterChain#internalDoFilter(ServletRequest, ServletResponse)}
+     *
+     * @param filters filters
+     * @return {@link PseudoFilterChain}
+     */
+    PseudoFilterChain buildFilterChain(PseudoFilter[] filters) {
+        return new PseudoFilterChain() {
+            private final int n = filters.length;
+            private int pos = 0;
+
+            @Override
+            public void doFilter() throws Exception {
+                if (pos < n) {
+                    var filter = filters[pos++];
+                    filter.doFilter(this);
+                    return;
+                }
+                log.info("We fell off the end of the chain -- call the servlet instance");
+
+                servlet.doDispatch();
+            }
         };
     }
 

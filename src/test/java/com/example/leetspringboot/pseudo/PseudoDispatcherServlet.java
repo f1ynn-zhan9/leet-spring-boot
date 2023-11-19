@@ -1,7 +1,6 @@
 package com.example.leetspringboot.pseudo;
 
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.Test;
 import org.springframework.web.servlet.HandlerExecutionChain;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.util.NestedServletException;
@@ -17,13 +16,12 @@ import java.util.stream.IntStream;
  * @see org.springframework.web.servlet.DispatcherServlet
  */
 @Slf4j
-class PseudoDispatcherServletTests {
+class PseudoDispatcherServlet {
     /**
      * @see org.springframework.web.servlet.DispatcherServlet#doDispatch(HttpServletRequest, HttpServletResponse)
      * @see org.springframework.web.servlet.DispatcherServlet#processDispatchResult(HttpServletRequest, HttpServletResponse, HandlerExecutionChain, ModelAndView, Exception)
      */
-    @Test
-    void test() throws Exception {
+    void doDispatch() throws Exception {
         PseudoHandlerExecutionChain mappedHandler = null;
         try {
             mappedHandler = new PseudoHandlerExecutionChain(buildInterceptorList());
